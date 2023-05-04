@@ -83,13 +83,13 @@ Some of The Most Important SQL Commands
 - `CREATE INDEX` - creates an index (search key)
 - `DROP INDEX` - deletes an index
 
-# 3. SQL SELECT Statement
+# 3. SQL `SELECT` Statement
 
 The `SELECT` statement is used to select data from a database.
 
 The data returned is stored in a result table, called the result-set.
 
-## SELECT Syntax
+## `SELECT` Syntax
 
 ```sql
 SELECT column1, column2, ...
@@ -102,7 +102,7 @@ Here, column1, column2, ... are the field names of the table you want to select 
 SELECT * FROM table_name;
 ```
 
-## SELECT Column Example
+## `SELECT` Column Example
 
 The following SQL statement **selects the "CustomerName" and "City" columns from the "Customers" table**:
 
@@ -110,7 +110,7 @@ The following SQL statement **selects the "CustomerName" and "City" columns from
 SELECT CustomerName, City FROM Customers;
 ```
 
-## SELECT \* Example
+## `SELECT *` Example
 
 The following SQL statement **selects all the columns from the "Customers" table**:
 
@@ -124,14 +124,14 @@ The `SELECT DISTINCT` **statement is used to return only distinct (different) va
 
 Inside a table, a column often contains many duplicate values; and **sometimes you only want to list the different (distinct) values**.
 
-## SELECT DISTINCT Syntax
+## `SELECT DISTINCT` Syntax
 
 ```sql
 SELECT DISTINCT column1, column2, ...
 FROM table_name;
 ```
 
-SELECT Example Without DISTINCT
+## `SELECT` Example Without `DISTINCT`
 
 The following SQL statement **selects all (including the duplicates) values from the "Country" column in the "Customers" table**:
 
@@ -139,7 +139,7 @@ The following SQL statement **selects all (including the duplicates) values from
 SELECT Country FROM Customers;
 ```
 
-SELECT DISTINCT Examples
+## `SELECT DISTINCT` Examples
 
 The following SQL statement **selects only the DISTINCT values from the "Country" column in the "Customers" table**:
 
@@ -155,14 +155,60 @@ The following SQL statement **lists the number of different (distinct) customer 
 SELECT COUNT(DISTINCT Country) FROM Customers;
 ```
 
-# 5. SQL WHERE Clause
+# 5. SQL `WHERE` Clause
 
-The WHERE clause is used to filter records.
+The `WHERE` clause is used to filter records.
 
 It is used to extract only those records that fulfill a specified condition.
-WHERE Syntax
+
+## `WHERE` Syntax
+
+```sql
 SELECT column1, column2, ...
 FROM table_name
 WHERE condition;
+```
 
-Note: The WHERE clause is not only used in SELECT statements, it is also used in UPDATE, DELETE, etc.!
+Note: The `WHERE` clause is not only used in `SELECT` statements, it is also used in `UPDATE`, `DELETE`, etc.!
+
+## `WHERE` Clause Example
+
+The following SQL statement selects all the customers from the country "Mexico", in the "Customers" table:
+
+```sql
+SELECT * FROM Customers
+WHERE Country='Mexico';
+```
+
+## Text Fields vs. Numeric Fields
+
+**SQL requires single quotes around text values** (most database systems will also allow double quotes).
+
+However,** numeric fields should not be enclosed in quotes**:
+
+```sql
+SELECT * FROM Customers
+WHERE CustomerID=1;
+```
+
+## **Operators** in The `WHERE` Clause
+
+The following operators can be used in the `WHERE` clause:
+
+`=` **Equal**
+
+`>` **Greater than**
+
+`<` **Less than**
+
+`>=` **Greater than or equal**
+
+`<=` **Less than or equal**
+
+`<>` **Not equal. In some versions of SQL this operator may be written as** `!=`
+
+`BETWEEN` **Between a certain range**
+
+`LIKE` **Search for a pattern**
+
+`IN` **To specify multiple possible values for a column**
