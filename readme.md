@@ -682,3 +682,203 @@ The following SQL statement **finds the number of products**:
 SELECT SUM(Quantity)
 FROM OrderDetails;
 ```
+
+# 12. SQL `LIKE` Operator
+
+**The `LIKE` operator is used in a `WHERE` clause to search for a specified pattern in a column.**
+
+There are two wildcards often used in conjunction with the `LIKE` operator:
+
+- The percent sign `%` represents zero, one, or multiple characters
+- The underscore sign `_` represents one, single character
+
+The percent sign and the underscore can also be used in combinations!
+
+## `LIKE` Syntax
+
+```sql
+SELECT column1, column2, ...
+FROM table_name
+WHERE columnN LIKE pattern;
+```
+
+**Tip: You can also combine any number of conditions using `AND` or `OR` operators.**
+
+Here are some examples showing different `LIKE` operators with `%` and `_` wildcards:
+LIKE Operator Description
+WHERE CustomerName LIKE `'a%'` Finds any values that start with "a"
+WHERE CustomerName LIKE `'%a'` Finds any values that end with "a"
+WHERE CustomerName LIKE `'%or%'` Finds any values that have "or" in any position
+WHERE CustomerName LIKE '`_r%'` Finds any values that have "r" in the second position
+WHERE CustomerName LIKE `'a_%'` Finds any values that start with "a" and are at least 2 characters in length
+WHERE CustomerName LIKE `'a__%'` Finds any values that start with "a" and are at least 3 characters in length
+WHERE ContactName LIKE `'a%o'` Finds any values that start with "a" and ends with "o"
+
+## SQL `LIKE` Examples
+
+The following SQL statement **selects all customers with a CustomerName starting with `"a"`**:
+
+```sql
+SELECT * FROM Customers
+WHERE CustomerName LIKE 'a%';
+```
+
+The following SQL statement **selects all customers with a CustomerName ending with `"a"`**:
+
+```sql
+SELECT * FROM Customers
+WHERE CustomerName LIKE '%a';
+```
+
+The following SQL statement **selects all customers with a CustomerName that have `"or"` in any position**:
+
+```sql
+SELECT * FROM Customers
+WHERE CustomerName LIKE '%or%';
+```
+
+The following SQL statement **selects all customers with a CustomerName that have `"r"` in the second position**:
+
+```sql
+SELECT * FROM Customers
+WHERE CustomerName LIKE '_r%';
+```
+
+The following SQL statement **selects all customers with a CustomerName that starts with `"a"` and are at least 3 characters in length**:
+
+```sql
+SELECT * FROM Customers
+WHERE CustomerName LIKE 'a__%';
+```
+
+The following SQL statement **selects all customers with a ContactName that starts with `"a"` and ends with `"o"`**:
+
+```sql
+SELECT * FROM Customers
+WHERE ContactName LIKE 'a%o';
+```
+
+The following SQL statement **selects all customers with a CustomerName that does NOT start with `"a"`**:
+
+```sql
+SELECT * FROM Customers
+WHERE CustomerName NOT LIKE 'a%';
+```
+
+# 13. SQL Wildcards
+
+**A wildcard character is used to substitute one or more characters in a string.**
+
+**Wildcard characters are used with the `LIKE` operator. The `LIKE` operator is used in a `WHERE` clause to search for a specified pattern in a column.**
+
+## Wildcard Characters in `Postgres`
+
+`%` Represents zero or more characters `bl%` finds bl, black, blue, and blob
+`_` Represents a single character `h_t` finds hot, hat, and hit
+`[]` Represents any single character within the brackets `h[oa]t` finds hot and hat, but not hit
+`^` Represents any character not in the brackets `h[^oa]t` finds hit, but not hot and hat
+`-` Represents any single character within the specified range `c[a-b]t` finds cat and cbt
+
+All the wildcards can also be used in combinations!
+
+Here are some examples showing different LIKE operators with `%` and `_` wildcards:
+
+**Finds any values that starts with "a"**
+
+```sql
+WHERE CustomerName LIKE 'a%'
+```
+
+**Finds any values that ends with "a"**
+
+```sql
+WHERE CustomerName LIKE '%a'
+```
+
+**Finds any values that have "or" in any position**
+
+```sql
+WHERE CustomerName LIKE '%or%'
+```
+
+**Finds any values that have "r" in the second position**
+
+```sql
+WHERE CustomerName LIKE '_r%'
+```
+
+**Finds any values that starts with "a" and are at least 3 characters in length**
+
+```sql
+WHERE CustomerName LIKE 'a__%'
+```
+
+**Finds any values that starts with "a" and ends with "o"**
+
+```sql
+WHERE ContactName LIKE 'a%o'
+```
+
+## Using the `%` Wildcard
+
+The following SQL statement **selects all customers with a City starting with "ber"**:
+
+```sql
+SELECT * FROM Customers
+WHERE City LIKE 'ber%';
+```
+
+The following SQL statement **selects all customers with a City containing the pattern "es"**:
+
+```sql
+SELECT * FROM Customers
+WHERE City LIKE '%es%';
+```
+
+## Using the `_` Wildcard
+
+The following SQL statement **selects all customers with a City starting with any character, followed by "ondon"**:
+
+```sql
+SELECT * FROM Customers
+WHERE City LIKE '_ondon';
+```
+
+The following SQL statement **selects all customers with a City starting with "L", followed by any character, followed by "n", followed by any character, followed by "on"**:
+
+```sql
+SELECT * FROM Customers
+WHERE City LIKE 'L_n_on';
+```
+
+## Using the `[charlist]` Wildcard
+
+The following SQL statement **selects all customers with a City starting with "b", "s", or "p"**:
+
+```sql
+SELECT * FROM Customers
+WHERE City LIKE '[bsp]%';
+```
+
+The following SQL statement **selects all customers with a City starting with "a", "b", or "c"**:
+
+```sql
+SELECT * FROM Customers
+WHERE City LIKE '[a-c]%';
+```
+
+## Using the `[!charlist]` Wildcard
+
+The two following SQL statements **select all customers with a City NOT starting with "b", "s", or "p"**:
+
+```sql
+SELECT * FROM Customers
+WHERE City LIKE '[!bsp]%';
+```
+
+Or:
+
+```sql
+SELECT * FROM Customers
+WHERE City NOT LIKE '[bsp]%';
+```
