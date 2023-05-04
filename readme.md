@@ -1163,3 +1163,39 @@ Here are the different types of the `JOIN`s in SQL:
 **Returns all records when there is a match in either left or right table**
 
 ![](images/fulljoin.png)
+
+# SQL `INNER JOIN` Keyword
+
+## `INNER JOIN` Syntax
+
+```sql
+SELECT column_name(s)
+FROM table1
+INNER JOIN table2
+ON table1.column_name = table2.column_name;
+```
+
+![](images/innerjoin.png)
+
+## SQL INNER JOIN Example
+
+The following SQL statement **selects all orders with customer information**:
+
+```sql
+SELECT Orders.OrderID, Customers.CustomerName
+FROM Orders
+INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID;
+```
+
+**`Note: The ` INNER JOIN `keyword selects all rows from both tables as long as there is a match between the columns. If there are records in the` "Orders" table `that do not have matches in` "Customers" `, these orders will not be shown!`**
+
+## JOIN Three Tables
+
+The following SQL statement **selects all orders with customer and shipper information**:
+
+```sql
+SELECT Orders.OrderID, Customers.CustomerName, Shippers.ShipperName
+FROM ((Orders
+INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID)
+INNER JOIN Shippers ON Orders.ShipperID = Shippers.ShipperID);
+```
