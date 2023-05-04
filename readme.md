@@ -400,7 +400,7 @@ INSERT INTO Customers (CustomerName, City, Country)
 VALUES ('Cardinal', 'Stavanger', 'Norway');
 ```
 
-## SQL `NULL` Values
+# 7. SQL `NULL` Values
 
 What is a `NULL` Value?
 
@@ -457,4 +457,228 @@ The following SQL **lists all customers with a value in the "Address" field**:
 SELECT CustomerName, ContactName, Address
 FROM Customers
 WHERE Address IS NOT NULL;
+```
+
+# 8. SQL `UPDATE` Statement
+
+**The `UPDATE` statement is used to modify the existing records in a table.**
+
+## `UPDATE` Syntax
+
+```sql
+UPDATE table_name
+SET column1 = value1, column2 = value2, ...
+WHERE condition;
+```
+
+`Note: Be careful when updating records in a table! Notice the WHERE clause in the UPDATE statement. The WHERE clause specifies which record(s) that should be updated. If you omit the WHERE clause, all records in the table will be updated!`
+
+## `UPDATE` Table
+
+The following SQL statement **updates the first customer (CustomerID = 1) with a new contact person and a new city**.
+
+```sql
+Get your own SQL Server
+UPDATE Customers
+SET ContactName = 'Alfred Schmidt', City= 'Frankfurt'
+WHERE CustomerID = 1;
+```
+
+## `UPDATE` Multiple Records
+
+It is the `WHERE` clause that determines how many records will be updated.
+
+The following SQL statement **will update the ContactName to "Juan" for all records where country is "Mexico"**:
+
+```sql
+UPDATE Customers
+SET ContactName='Juan'
+WHERE Country='Mexico';
+```
+
+## Update Warning!
+
+`Be careful when updating records. If you omit the WHERE clause, ALL records will be updated!`
+
+```sql
+UPDATE Customers
+SET ContactName='Juan';
+```
+
+`WARNING: Now every ContactName on every ROW is Juan (!)`
+
+# 8. SQL `DELETE` Statement
+
+**The `DELETE` statement is used to delete existing records in a table.**
+
+## `DELETE` Syntax
+
+```sql
+DELETE FROM table_name WHERE condition;
+```
+
+`Note: Be careful when deleting records in a table! Notice the WHERE clause in the DELETE statement. The WHERE clause specifies which record(s) should be deleted. If you omit the WHERE clause, all records in the table will be deleted!`
+
+## SQL `DELETE` Example
+
+The following SQL statement **deletes the customer "Alfreds Futterkiste" from the "Customers" table**:
+
+```sql
+DELETE FROM Customers WHERE CustomerName='Alfreds Futterkiste';
+```
+
+## `DELETE` All Records
+
+**It is possible to delete all rows in a table without deleting the table. This means that the table structure, attributes, and indexes will be intact**:
+
+```sql
+DELETE FROM table_name;
+```
+
+## `DELETE` All Records Example
+
+The following SQL statement **deletes all rows in the "Customers" table, without deleting the table**:
+
+```sql
+DELETE FROM Customers;
+```
+
+# 9. SQL `TOP`, `LIMIT`, `FETCH FIRST` or `ROWNUM` Clause
+
+## The SQL `SELECT TOP` Clause
+
+**The `SELECT TOP` clause is used to specify the number of records to return.**
+
+**The `SELECT TOP` clause is useful on large tables with thousands of records. Returning a large number of records can impact performance.**
+
+Note: Not all database systems support the SELECT TOP clause. **MySQL/Postgres supports the `LIMIT` clause to select a limited number of records**, while Oracle uses `FETCH FIRST n ROWS ONLY` and `ROWNUM`.
+
+## Postgres `LIMIT` Syntax
+
+```sql
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+LIMIT number;
+```
+
+## Postgres `LIMIT` Example
+
+The following SQL statement **selects the first three records from the "Customers" table** (for Postgres):
+
+```sql
+Example
+SELECT * FROM Customers
+LIMIT 3;
+```
+
+## Add A `WHERE` Clause
+
+The following SQL statement **selects the first three records from the "Customers" table, where the country is "Germany"** (for Postgres):
+
+```sql
+SELECT * FROM Customers
+WHERE Country='Germany'
+LIMIT 3;
+```
+
+# 10. SQL `MIN()` and `MAX()` Functions
+
+**The `MIN()` function returns the smallest value of the selected column.**
+
+**The `MAX()` function returns the largest value of the selected column.**
+
+## `MIN()` Syntax
+
+```sql
+SELECT MIN(column_name)
+FROM table_name
+WHERE condition;
+```
+
+## `MAX()` Syntax
+
+```sql
+SELECT MAX(column_name)
+FROM table_name
+WHERE condition;
+```
+
+## `MIN()` Example
+
+The following SQL statement **finds the price of the cheapest product**:
+
+```sql
+SELECT MIN(Price) AS SmallestPrice
+FROM Products;
+```
+
+## `MAX()` Example
+
+The following SQL statement **finds the price of the most expensive product**:
+
+```sql
+SELECT MAX(Price) AS LargestPrice
+FROM Products;
+```
+
+# 11. SQL `COUNT()`, `AVG()` and `SUM()` Functions
+
+**The `COUNT()` function returns the number of rows that matches a specified criterion.**
+
+## `COUNT()` Syntax
+
+```sql
+SELECT COUNT(column_name)
+FROM table_name
+WHERE condition;
+```
+
+**The `AVG()` function returns tthe average value of a numeric column.**
+
+## `AVG()` Syntax
+
+```sql
+SELECT AVG(column_name)
+FROM table_name
+WHERE condition;
+```
+
+**The `SUM()` function returns the total sum of a numeric column.**
+
+## `SUM()` Syntax
+
+```sql
+SELECT SUM(column_name)
+FROM table_name
+WHERE condition;
+```
+
+## `COUNT()` Example
+
+The following SQL statement **finds the number of products**:
+
+```sql
+SELECT COUNT(ProductID)
+FROM Products;
+```
+
+## `AVG()` Example
+
+The following SQL statement **finds the average price of all products**:
+`Note: NULL values are ignored.`
+
+```sql
+SELECT AVG(Price)
+FROM Products;
+```
+
+## `SUM()` Example
+
+The following SQL statement **finds the number of products**:
+`Note: NULL values are ignored.`
+
+```sql
+SELECT SUM(Quantity)
+FROM OrderDetails;
 ```
