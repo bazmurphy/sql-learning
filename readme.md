@@ -1100,19 +1100,36 @@ WHERE Customers.CustomerName='Around the Horn' AND Customers.CustomerID=Orders.C
 
 Let's look at a selection from the `Orders table`:
 
-| OrderID | CustomerID | OrderDate  |
-| ------- | ---------- | ---------- |
-| 10308   | 2          | 1996-09-18 |
-| 10309   | 37         | 1996-09-19 |
-| 10310   | 77         | 1996-09-20 |
+```
+ orderid | customerid |      orderdate
+---------+------------+---------------------
+   10248 |         90 | 1996-07-04 00:00:00
+   10249 |         81 | 1996-07-05 00:00:00
+   10250 |         34 | 1996-07-08 00:00:00
+   10251 |         84 | 1996-07-08 00:00:00
+   10252 |         76 | 1996-07-09 00:00:00
+   10253 |         34 | 1996-07-10 00:00:00
+   10254 |         14 | 1996-07-11 00:00:00
+   10255 |         68 | 1996-07-12 00:00:00
+   10256 |         88 | 1996-07-15 00:00:00
+```
 
 Then, look at a selection from the `Customers table`:
 
-| CustomerID | CustomerName                       | ContactName    | Country |
-| ---------- | ---------------------------------- | -------------- | ------- |
-| 1          | Alfreds Futterkiste                | Maria Anders   | Germany |
-| 2          | Ana Trujillo Emparedados y helados | Ana Trujillo   | Mexico  |
-| 3          | Antonio Moreno Taquería            | Antonio Moreno | Mexico  |
+```
+ customerid |             customername             |     contactname      |   country
+------------+--------------------------------------+----------------------+-------------
+          1 | Alfreds Futterkiste                  | Maria Anders         | Germany
+          2 | Ana Trujillo Emparedados y helados   | Ana Trujillo         | Mexico
+          3 | Antonio Moreno Taquer├¡a             | Antonio Moreno       | Mexico
+          4 | Around the Horn                      | Thomas Hardy         | UK
+          5 | Berglunds snabbk├Âp                  | Christina Berglund   | Sweden
+          6 | Blauer See Delikatessen              | Hanna Moos           | Germany
+          7 | Blondel p├¿re et fils                | Fr├®d├®rique Citeaux | France
+          8 | B├│lido Comidas preparadas           | Mart├¡n Sommer       | Spain
+          9 | Bon app''                            | Laurence Lebihans    | France
+         10 | Bottom-Dollar Marketse               | Elizabeth Lincoln    | Canada
+```
 
 **Notice that the `CustomerID` column in the `Orders table` refers to the `CustomerID` in the `Customers table.`**
 
@@ -1128,13 +1145,20 @@ INNER JOIN Customers ON Orders.CustomerID=Customers.CustomerID;
 
 and it will produce something like this:
 
-| OrderID | CustomerName                       | OrderDate  |
-| ------- | ---------------------------------- | ---------- |
-| 10308   | Ana Trujillo Emparedados y helados | 9/18/1996  |
-| 10365   | Antonio Moreno Taquería            | 11/27/1996 |
-| 10383   | Around the Horn                    | 12/16/1996 |
-| 10355   | Around the Horn                    | 11/15/1996 |
-| 10278   | Berglunds snabbköp                 | 8/12/1996  |
+```
+ orderid |       customername       |      orderdate
+---------+--------------------------+---------------------
+   10248 | Wilman Kala              | 1996-07-04 00:00:00
+   10249 | Tradi├º├úo Hipermercados | 1996-07-05 00:00:00
+   10250 | Hanari Carnes            | 1996-07-08 00:00:00
+   10251 | Victuailles en stock     | 1996-07-08 00:00:00
+   10252 | Supr├¬mes d├®lices       | 1996-07-09 00:00:00
+   10253 | Hanari Carnes            | 1996-07-10 00:00:00
+   10254 | Chop-suey Chinese        | 1996-07-11 00:00:00
+   10255 | Richter Supermarkt       | 1996-07-12 00:00:00
+   10256 | Wellington Importadora   | 1996-07-15 00:00:00
+   10257 | HILARI├ôN-Abastos        | 1996-07-16 00:00:00
+```
 
 ## Different Types of SQL JOINs
 
@@ -1164,7 +1188,7 @@ Here are the different types of the `JOIN`s in SQL:
 
 ![](images/fulljoin.png)
 
-# SQL `INNER JOIN` Keyword
+# 17. SQL `INNER JOIN` Keyword
 
 ## `INNER JOIN` Syntax
 
@@ -1187,6 +1211,20 @@ FROM Orders
 INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID;
 ```
 
+```
+ orderid |            customername
+---------+------------------------------------
+   10248 | Wilman Kala
+   10249 | Tradi├º├úo Hipermercados
+   10250 | Hanari Carnes
+   10251 | Victuailles en stock
+   10252 | Supr├¬mes d├®lices
+   10253 | Hanari Carnes
+   10254 | Chop-suey Chinese
+   10255 | Richter Supermarkt
+   10256 | Wellington Importadora
+```
+
 **`Note: The ` INNER JOIN `keyword selects all rows from both tables as long as there is a match between the columns. If there are records in the` "Orders" table `that do not have matches in` "Customers" `, these orders will not be shown!`**
 
 ## JOIN Three Tables
@@ -1198,4 +1236,62 @@ SELECT Orders.OrderID, Customers.CustomerName, Shippers.ShipperName
 FROM ((Orders
 INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID)
 INNER JOIN Shippers ON Orders.ShipperID = Shippers.ShipperID);
+```
+
+```
+ orderid |            customername            |   shippername
+---------+------------------------------------+------------------
+   10248 | Wilman Kala                        | Federal Shipping
+   10249 | Tradi├º├úo Hipermercados           | Speedy Express
+   10250 | Hanari Carnes                      | United Package
+   10251 | Victuailles en stock               | Speedy Express
+   10252 | Supr├¬mes d├®lices                 | United Package
+   10253 | Hanari Carnes                      | United Package
+   10254 | Chop-suey Chinese                  | United Package
+   10255 | Richter Supermarkt                 | Federal Shipping
+   10256 | Wellington Importadora             | United Package
+```
+
+# 17. SQL `LEFT JOIN` Keyword
+
+**The `LEFT JOIN` keyword returns all records from the left table (table1), and the matching records from the right table (table2). The result is 0 records from the right side, if there is no match.**
+
+## LEFT JOIN Syntax
+
+```sql
+SELECT column_name(s)
+FROM table1
+LEFT JOIN table2
+ON table1.column_name = table2.column_name;
+```
+
+Note: In some databases `LEFT JOIN` is called `LEFT OUTER JOIN`.
+
+![](images/leftjoin.png)
+
+## SQL LEFT JOIN Example
+
+The following SQL statement will **select all customers, and any orders they might have**:
+
+`Note: The `LEFT JOIN` keyword returns all records from the left table (Customers), even if there are no matches in the right table (Orders).`
+
+```sql
+SELECT Customers.CustomerName, Orders.OrderID
+FROM Customers
+LEFT JOIN Orders ON Customers.CustomerID = Orders.CustomerID
+ORDER BY Customers.CustomerName;
+```
+
+```
+             customername             | orderid
+--------------------------------------+---------
+ Alfreds Futterkiste                  |
+ Ana Trujillo Emparedados y helados   |   10308
+ Antonio Moreno Taquer├¡a             |   10365
+ Around the Horn                      |   10383
+ Around the Horn                      |   10355
+ B''s Beverages                       |   10289
+ B├│lido Comidas preparadas           |   10326
+ Berglunds snabbk├Âp                  |   10278
+ Berglunds snabbk├Âp                  |   10384
 ```
