@@ -1897,8 +1897,8 @@ WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SupplierID = Suppl
 
 **The `ANY` operator:**
 
-**- returns a boolean value as a result**
-**- returns TRUE if ANY of the subquery values meet the condition**
+- **returns a boolean value as a result**
+- **returns TRUE if ANY of the subquery values meet the condition**
 
 **`ANY` means that the condition will be true if the operation is true for any of the values in the range.**
 
@@ -2083,14 +2083,14 @@ WHERE condition;
 The following SQL statement **creates a backup copy of Customers**:
 
 ```sql
-SELECT \* INTO CustomersBackup2017
+SELECT * INTO CustomersBackup2017
 FROM Customers;
 ```
 
 The following SQL statement **uses the IN clause to copy the table into a new table in another database**:
 
 ```sql
-SELECT \* INTO CustomersBackup2017 IN 'Backup.mdb'
+SELECT * INTO CustomersBackup2017 IN 'Backup.mdb'
 FROM Customers;
 ```
 
@@ -2104,7 +2104,7 @@ FROM Customers;
 The following SQL statement **copies only the German customers into a new table**:
 
 ```sql
-SELECT \* INTO CustomersGermany
+SELECT * INTO CustomersGermany
 FROM Customers
 WHERE Country = 'Germany';
 ```
@@ -2121,7 +2121,397 @@ LEFT JOIN Orders ON Customers.CustomerID = Orders.CustomerID;
 **Tip: `SELECT INTO` can also be used to create a new, empty table using the schema of another. Just add a WHERE clause that causes the query to return no data:**
 
 ```sql
-SELECT \* INTO newtable
+SELECT * INTO newtable
 FROM oldtable
 WHERE 1 = 0;
 ```
+
+# 28. SQL `INSERT INTO SELECT` Statement
+
+**The `INSERT INTO SELECT` statement copies data from one table and inserts it into another table.**
+
+**The `INSERT INTO SELECT` statement requires that the data types in source and target tables match.**
+
+**Note: The existing records in the target table are unaffected.**
+
+## `INSERT INTO SELECT` Syntax
+
+**Copy all columns from one table to another table**:
+
+```sql
+INSERT INTO table2
+SELECT * FROM table1
+WHERE condition;
+```
+
+**Copy only some columns from one table into another table**:
+
+```sql
+INSERT INTO table2 (column1, column2, column3, ...)
+SELECT column1, column2, column3, ...
+FROM table1
+WHERE condition;
+```
+
+## SQL `INSERT INTO SELECT` Examples
+
+**The following SQL statement copies "Suppliers" into "Customers" (the columns that are not filled with data, will contain `NULL`):**
+
+```sql
+INSERT INTO Customers (CustomerName, City, Country)
+SELECT SupplierName, City, Country FROM Suppliers;
+```
+
+The following SQL statement copies "Suppliers" into "Customers" (fill all columns):
+
+```sql
+INSERT INTO Customers (CustomerName, ContactName, Address, City, PostalCode, Country)
+SELECT SupplierName, ContactName, Address, City, PostalCode, Country FROM Suppliers;
+```
+
+The following SQL statement copies only the German suppliers into "Customers":
+
+```sql
+INSERT INTO Customers (CustomerName, City, Country)
+SELECT SupplierName, City, Country FROM Suppliers
+WHERE Country='Germany';
+```
+
+# 29. SQL `CASE` Expression
+
+**The `CASE` expression goes through conditions and returns a value when the first condition is met (like an if-then-else statement). So, once a condition is true, it will stop reading and return the result. If no conditions are true, it returns the value in the `ELSE` clause.**
+
+**If there is no `ELSE` part and no conditions are true, it returns `NULL`.**
+
+## `CASE` Syntax
+
+```sql
+CASE
+    WHEN condition1 THEN result1
+    WHEN condition2 THEN result2
+    WHEN conditionN THEN resultN
+    ELSE result
+END;
+```
+
+## SQL `CASE` Examples
+
+The following SQL goes through conditions and returns a value when the first condition is met:
+
+```sql
+SELECT OrderID, Quantity,
+CASE
+    WHEN Quantity > 30 THEN 'The quantity is greater than 30'
+    WHEN Quantity = 30 THEN 'The quantity is 30'
+    ELSE 'The quantity is under 30'
+END AS QuantityText
+FROM OrderDetails;
+```
+
+```
+ orderid | quantity |          quantitytext
+---------+----------+---------------------------------
+   10248 |       12 | The quantity is under 30
+   10248 |       10 | The quantity is under 30
+   10248 |        5 | The quantity is under 30
+   10249 |        9 | The quantity is under 30
+   10249 |       40 | The quantity is greater than 30
+   10250 |       10 | The quantity is under 30
+   10250 |       35 | The quantity is greater than 30
+   10250 |       15 | The quantity is under 30
+   10251 |        6 | The quantity is under 30
+   10251 |       15 | The quantity is under 30
+```
+
+The following SQL will order the customers by City. However, if City is NULL, then order by Country:
+
+```sql
+SELECT CustomerName, City, Country
+FROM Customers
+ORDER BY
+(CASE
+    WHEN City IS NULL THEN Country
+    ELSE City
+END);
+```
+
+```
+         customername         |     city     |   country
+------------------------------+--------------+-------------
+ Drachenblut Delikatessend    | Aachen       | Germany
+ Rattlesnake Canyon Grocery   | Albuquerque  | USA
+ Old World Delicatessen       | Anchorage    | USA
+ Vaffeljernet                 | Århus        | Denmark
+ Galería del gastrónomo       | Barcelona    | Spain
+ LILA-Supermercado            | Barquisimeto | Venezuela
+ Magazzini Alimentari Riuniti | Bergamo      | Italy
+ Alfreds Futterkiste          | Berlin       | Germany
+ Chop-suey Chinese            | Bern         | Switzerland
+ Save-a-lot Markets           | Boise        | USA
+```
+
+# 30. SQL `NULL` Functions
+
+## SQL `IFNULL()`, `ISNULL()`, `COALESCE()`, and `NVL()` Functions
+
+**Look at the following "Products" table:**
+
+| P_Id | ProductName | UnitPrice | UnitsInStock | UnitsOnOrder |
+| ---- | ----------- | --------- | ------------ | ------------ |
+| 1    | Jarlsberg   | 10.45     | 16           | 15           |
+| 2    | Mascarpone  | 32.56     | 23           | &nbsp;       |
+| 3    | Gorgonzola  | 15.67     | 9            | 20           |
+
+**Suppose that the "UnitsOnOrder" column is optional, and may contain `NULL` values.**
+
+**Look at the following `SELECT` statement:**
+
+```sql
+SELECT ProductName, UnitPrice * (UnitsInStock + UnitsOnOrder)
+FROM Products;
+```
+
+**In the example above, if any of the "UnitsOnOrder" values are `NULL`, the result will be `NULL`.**
+
+**In Postgres we can use the `COALESCE()` function, like this:**
+
+```sql
+SELECT ProductName, UnitPrice * (UnitsInStock + COALESCE(UnitsOnOrder, 0))
+FROM Products;
+```
+
+# 31. SQL `Stored Procedures` for SQL Server
+
+**A stored procedure is a prepared SQL code that you can save, so the code can be reused over and over again.**
+
+**So if you have an SQL query that you write over and over again, save it as a stored procedure, and then just call it to execute it.**
+
+**You can also pass parameters to a stored procedure, so that the stored procedure can act based on the parameter value(s) that is passed.**
+
+## Stored Procedure Syntax
+
+```sql
+CREATE PROCEDURE procedure_name
+AS
+sql_statement
+GO;
+```
+
+## Execute a Stored Procedure
+
+```sql
+EXEC procedure_name;
+```
+
+## Stored Procedure Example
+
+The following SQL statement **creates a stored procedure named "SelectAllCustomers" that selects all records from the "Customers" table**:
+
+```sql
+CREATE PROCEDURE SelectAllCustomers
+AS
+SELECT * FROM Customers
+GO;
+```
+
+## Execute the stored procedure above as follows:
+
+```sql
+EXEC SelectAllCustomers;
+```
+
+## Stored Procedure With One Parameter
+
+The following SQL statement **creates a stored procedure that selects Customers from a particular City from the "Customers" table**:
+
+```sql
+CREATE PROCEDURE SelectAllCustomers @City nvarchar(30)
+AS
+SELECT * FROM Customers WHERE City = @City
+GO;
+```
+
+**Execute the stored procedure above as follows:**
+
+```sql
+EXEC SelectAllCustomers @City = 'London';
+```
+
+## Stored Procedure With Multiple Parameters
+
+**Setting up multiple parameters is very easy. Just list each parameter and the data type separated by a comma as shown below.**
+
+The following SQL statement **creates a stored procedure that selects Customers from a particular City with a particular PostalCode from the "Customers" table**:
+
+```sql
+CREATE PROCEDURE SelectAllCustomers @City nvarchar(30), @PostalCode nvarchar(10)
+AS
+SELECT * FROM Customers WHERE City = @City AND PostalCode = @PostalCode
+GO;
+```
+
+**Execute the stored procedure above as follows**:
+
+```sql
+EXEC SelectAllCustomers @City = 'London', @PostalCode = 'WA1 1DP';
+```
+
+# 32. SQL `Comments`
+
+**Comments are used to explain sections of SQL statements, or to prevent execution of SQL statements.**
+
+## Single Line Comments
+
+**Single line comments start with `--`.**
+
+**Any text between `--` and the end of the line will be ignored (will not be executed).**
+
+The following example **uses a single-line comment as an explanation:**
+
+```sql
+--Select all:
+SELECT * FROM Customers;
+```
+
+The following example **uses a single-line comment to ignore the end of a line**:
+
+```sql
+SELECT * FROM Customers -- WHERE City='Berlin';
+```
+
+The following example **uses a single-line comment to ignore a statement**:
+
+```sql
+--SELECT * FROM Customers;
+SELECT * FROM Products;
+```
+
+## Multi-line Comments
+
+**Multi-line comments start with `/*` and end with `*/`.**
+
+**Any text between `/*` and `*/` will be ignored.**
+
+**The following example uses a multi-line comment as an explanation:**
+
+```sql
+/*Select all the columns
+of all the records
+in the Customers table:*/
+SELECT * FROM Customers;
+```
+
+The following example **uses a multi-line comment to ignore many statements**:
+
+```sql
+/*SELECT * FROM Customers;
+SELECT * FROM Products;
+SELECT * FROM Orders;
+SELECT * FROM Categories;*/
+SELECT * FROM Suppliers;
+```
+
+**To ignore just a part of a statement, also use the `/* */` comment.**
+
+The following example **uses a comment to ignore part of a line**:
+
+```sql
+SELECT CustomerName, /*City,*/ Country FROM Customers;
+```
+
+The following example **uses a comment to ignore part of a statement**:
+
+```sql
+SELECT * FROM Customers WHERE (CustomerName LIKE 'L%'
+OR CustomerName LIKE 'R%' /*OR CustomerName LIKE 'S%'
+OR CustomerName LIKE 'T%'*/ OR CustomerName LIKE 'W%')
+AND Country='USA'
+ORDER BY CustomerName;
+```
+
+```
+ customerid |        customername        |  contactname   |           address           |     city      | postalcode | country
+------------+----------------------------+----------------+-----------------------------+---------------+------------+---------
+         43 | Lazy K Kountry Store       | John Steel     | 12 Orchestra Terrace        | Walla Walla   | 99362      | USA
+         45 | Let''s Stop N Shop         | Jaime Yorres   | 87 Polk St. Suite 5         | San Francisco | 94117      | USA
+         48 | Lonesome Pine Restaurant   | Fran Wilson    | 89 Chiaroscuro Rd.          | Portland      | 97219      | USA
+         65 | Rattlesnake Canyon Grocery | Paula Wilson   | 2817 Milton Dr.             | Albuquerque   | 87110      | USA
+         89 | White Clover Markets       | Karl Jablonski | 305 - 14th Ave. S. Suite 3B | Seattle       | 98128      | USA
+
+```
+
+# 33. SQL `Operators`
+
+## SQL Arithmetic Operators
+
+`+` Add
+
+`-` Subtract
+
+`*` Multiply
+
+`/` Divide
+
+`%` Modulo
+
+## SQL Bitwise Operators
+
+`&` Bitwise AND
+
+`|` Bitwise OR
+
+`^` Bitwise exclusive OR
+
+## SQL Comparison Operators
+
+`=` Equal to
+
+`>` Greater than
+
+`<` Less than
+
+`>=` Greater than or equal to
+
+`<=` Less than or equal to
+
+`<>` Not equal to
+
+## SQL Compound Operators
+
+`+=` Add equals
+
+`-=` Subtract equals
+
+`*=` Multiply equals
+
+`/=` Divide equals
+
+`%=` Modulo equals
+
+`&=` Bitwise AND equals
+
+`^-=` Bitwise exclusive equals
+
+`|*=` Bitwise OR equals
+
+## SQL Logical Operators
+
+`ALL` TRUE if all of the subquery values meet the condition
+
+`AND` TRUE if all the conditions separated by AND is TRUE
+
+`ANY` TRUE if any of the subquery values meet the condition
+
+`BETWEEN` TRUE if the operand is within the range of comparisons
+
+`EXISTS` TRUE if the subquery returns one or more records
+
+`IN` TRUE if the operand is equal to one of a list of expressions
+
+`LIKE` TRUE if the operand matches a pattern
+
+`NOT` Displays a record if the condition(s) is NOT TRUE
+
+`OR` TRUE if any of the conditions separated by OR is TRUE
+
+`SOME` TRUE if any of the subquery values meet the condition
