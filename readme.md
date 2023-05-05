@@ -1302,7 +1302,7 @@ ORDER BY Customers.CustomerName;
 
 **The result is 0 records from the left side, if there is no match.**
 
-# `RIGHT JOIN` Syntax
+## `RIGHT JOIN` Syntax
 
 ```sql
 SELECT column_name(s)
@@ -1315,7 +1315,7 @@ ON table1.column_name = table2.column_name;
 
 ![](images/rightjoin.png)
 
-# SQL RIGHT JOIN Example
+## SQL `RIGHT JOIN` Example
 
 The following SQL statement will **return all employees, and any orders they might have placed**:
 
@@ -1351,7 +1351,7 @@ ORDER BY Orders.OrderID;
 
 **Tip: `FULL OUTER JOIN` and `FULL JOIN` are the same.**
 
-# `FULL OUTER JOIN` Syntax
+## `FULL OUTER JOIN` Syntax
 
 ```sql
 SELECT column_name(s)
@@ -1363,7 +1363,7 @@ WHERE condition;
 
 ![](images/fulljoin.png)
 
-# `FULL OUTER JOIN` Example
+## `FULL OUTER JOIN` Example
 
 The following SQL statement **selects all customers, and all orders:**
 
@@ -1405,7 +1405,7 @@ FROM table1 T1, table1 T2
 WHERE condition;
 ```
 
-# SQL Self Join Example
+## SQL Self Join Example
 
 The following SQL statement **matches customers that are from the same city**:
 
@@ -1441,7 +1441,7 @@ The `UNION` operator is used to combine the result-set of two or more `SELECT` s
 - **The columns must also have similar data types**
 - **The columns in every `SELECT` statement must also be in the same order**
 
-# `UNION` Syntax
+## `UNION` Syntax
 
 ```sql
 SELECT column_name(s) FROM table1
@@ -1449,7 +1449,7 @@ UNION
 SELECT column_name(s) FROM table2;
 ```
 
-# `UNION` ALL Syntax
+## `UNION` ALL Syntax
 
 **The `UNION` operator selects only distinct values by default. To allow duplicate values, use ` UNION ALL`:**
 
@@ -1461,7 +1461,7 @@ SELECT column_name(s) FROM table2;
 
 **Note: The column names in the result-set are usually equal to the column names in the first `SELECT` statement.**
 
-# SQL `UNION` Example
+## SQL `UNION` Example
 
 The following SQL statement **returns the cities (only distinct values) from both the "Customers" and the "Suppliers" table**:
 
@@ -1489,7 +1489,7 @@ ORDER BY City;
 
 **Note: If some customers or suppliers have the same city, each city will only be listed once, because `UNION` selects only distinct values. Use UNION ALL to also select duplicate values!**
 
-# SQL `UNION ALL` Example
+## SQL `UNION ALL` Example
 
 The following SQL statement **returns the cities (duplicate values also) from both the "Customers" and the "Suppliers" table**:
 
@@ -1515,7 +1515,7 @@ ORDER BY City;
  Bergamo
 ```
 
-# SQL `UNION` With `WHERE`
+## SQL `UNION` With `WHERE`
 
 The following SQL statement **returns the German cities (only distinct values) from both the "Customers" and the "Suppliers" table**:
 
@@ -1543,7 +1543,7 @@ ORDER BY City;
  Mannheim       | Germany
 ```
 
-# SQL `UNION ALL` With `WHERE`
+## SQL `UNION ALL` With `WHERE`
 
 The following SQL statement **returns the German cities (duplicate values also) from both the "Customers" and the "Suppliers" table**:
 
@@ -1571,7 +1571,7 @@ ORDER BY City;
  Leipzig        | Germany
 ```
 
-# Another `UNION` Example
+## Another `UNION` Example
 
 The following SQL statement **lists all customers and suppliers**:
 
@@ -1606,7 +1606,7 @@ FROM Suppliers;
 
 **The `GROUP BY` statement is often used with aggregate functions (`COUNT()`, `MAX()`, `MIN()`, `SUM()`, `AVG()`) to group the result-set by one or more columns.**
 
-# `GROUP BY` Syntax
+## `GROUP BY` Syntax
 
 ```sql
 SELECT column_name(s)
@@ -1616,7 +1616,7 @@ GROUP BY column_name(s)
 ORDER BY column_name(s);
 ```
 
-# SQL `GROUP BY` Examples
+## SQL `GROUP BY` Examples
 
 The following SQL statement **lists the number of customers in each country**:
 
@@ -1665,7 +1665,7 @@ ORDER BY COUNT(CustomerID) DESC;
      3 | Italy
 ```
 
-# SQL `GROUP BY` With `JOIN` Example
+## SQL `GROUP BY` With `JOIN` Example
 
 The following SQL statement **lists the number of orders sent by each shipper**:
 
@@ -1681,4 +1681,102 @@ GROUP BY ShipperName;
  United Package   |             74
  Speedy Express   |             54
  Federal Shipping |             68
+```
+
+# 23. SQL `HAVING` Clause
+
+The HAVING clause was added to SQL because the WHERE keyword cannot be used with aggregate functions.
+
+## `HAVING` Syntax
+
+```sql
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+GROUP BY column_name(s)
+HAVING condition
+ORDER BY column_name(s);
+```
+
+## SQL `HAVING` Examples
+
+The following SQL statement **lists the number of customers in each country. Only include countries with more than 5 customers**:
+
+```sql
+SELECT COUNT(CustomerID), Country
+FROM Customers
+GROUP BY Country
+HAVING COUNT(CustomerID) > 5;
+```
+
+```
+ count | country
+-------+---------
+    13 | USA
+    11 | France
+     9 | Brazil
+     7 | UK
+    11 | Germany
+```
+
+The following SQL statement **lists the number of customers in each country, sorted high to low (Only include countries with more than 5 customers)**:
+
+```sql
+SELECT COUNT(CustomerID), Country
+FROM Customers
+GROUP BY Country
+HAVING COUNT(CustomerID) > 5
+ORDER BY COUNT(CustomerID) DESC;
+```
+
+```
+ count | country
+-------+---------
+    13 | USA
+    11 | France
+    11 | Germany
+     9 | Brazil
+     7 | UK
+```
+
+## More `HAVING` Examples
+
+The following SQL statement **lists the employees that have registered more than 10 orders**:
+
+```sql
+SELECT Employees.LastName, COUNT(Orders.OrderID) AS NumberOfOrders
+FROM (Orders
+INNER JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID)
+GROUP BY LastName
+HAVING COUNT(Orders.OrderID) > 10;
+```
+
+```
+ lastname  | numberoforders
+-----------+----------------
+ Fuller    |             20
+ Leverling |             31
+ Buchanan  |             11
+ Davolio   |             29
+ King      |             14
+ Suyama    |             18
+ Callahan  |             27
+ Peacock   |             40
+```
+
+The following SQL statement **lists if the employees "Davolio" or "Fuller" have registered more than 25 orders**:
+
+```sql
+SELECT Employees.LastName, COUNT(Orders.OrderID) AS NumberOfOrders
+FROM Orders
+INNER JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID
+WHERE LastName = 'Davolio' OR LastName = 'Fuller'
+GROUP BY LastName
+HAVING COUNT(Orders.OrderID) > 25;
+```
+
+```
+ lastname | numberoforders
+----------+----------------
+ Davolio  |             29
 ```
