@@ -1225,7 +1225,7 @@ INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID;
    10256 | Wellington Importadora
 ```
 
-**`Note: The ` INNER JOIN `keyword selects all rows from both tables as long as there is a match between the columns. If there are records in the` "Orders" table `that do not have matches in` "Customers" `, these orders will not be shown!`**
+**Note: The `INNER JOIN`keyword selects all rows from both tables as long as there is a match between the columns. If there are records in the `"Orders" table` that do not have matches in `"Customers"`, these orders will not be shown!**
 
 ## JOIN Three Tables
 
@@ -1265,7 +1265,7 @@ LEFT JOIN table2
 ON table1.column_name = table2.column_name;
 ```
 
-Note: In some databases `LEFT JOIN` is called `LEFT OUTER JOIN`.
+**Note: In some databases `LEFT JOIN` is called `LEFT OUTER JOIN`.**
 
 ![](images/leftjoin.png)
 
@@ -1273,7 +1273,7 @@ Note: In some databases `LEFT JOIN` is called `LEFT OUTER JOIN`.
 
 The following SQL statement will **select all customers, and any orders they might have**:
 
-`Note: The `LEFT JOIN` keyword returns all records from the left table (Customers), even if there are no matches in the right table (Orders).`
+**Note: The `LEFT JOIN` keyword returns all records from the left table (Customers), even if there are no matches in the right table (Orders).**
 
 ```sql
 SELECT Customers.CustomerName, Orders.OrderID
@@ -1294,4 +1294,391 @@ ORDER BY Customers.CustomerName;
  B├│lido Comidas preparadas           |   10326
  Berglunds snabbk├Âp                  |   10278
  Berglunds snabbk├Âp                  |   10384
+```
+
+# 18. SQL `RIGHT JOIN` Keyword
+
+**The `RIGHT JOIN` keyword returns all records from the right table (table2), and the matching records from the left table (table1).**
+
+**The result is 0 records from the left side, if there is no match.**
+
+# `RIGHT JOIN` Syntax
+
+```sql
+SELECT column_name(s)
+FROM table1
+RIGHT JOIN table2
+ON table1.column_name = table2.column_name;
+```
+
+**Note: In some databases `RIGHT JOIN` is called `RIGHT OUTER JOIN`.**
+
+![](images/rightjoin.png)
+
+# SQL RIGHT JOIN Example
+
+The following SQL statement will **return all employees, and any orders they might have placed**:
+
+```sql
+SELECT Orders.OrderID, Employees.LastName, Employees.FirstName
+FROM Orders
+RIGHT JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID
+ORDER BY Orders.OrderID;
+```
+
+`Note: The ` RIGHT JOIN ` keyword returns all records from the right table (Employees), even if there are no matches in the left table (Orders).`
+
+```
+ orderid | lastname  | firstname
+---------+-----------+-----------
+   10248 | Buchanan  | Steven
+   10249 | Suyama    | Michael
+   10250 | Peacock   | Margaret
+   10251 | Leverling | Janet
+   10252 | Peacock   | Margaret
+   10253 | Leverling | Janet
+   10254 | Buchanan  | Steven
+   10255 | Dodsworth | Anne
+   10256 | Leverling | Janet
+   10257 | Peacock   | Margaret
+```
+
+# 19. SQL `FULL OUTER JOIN` Keyword
+
+**The `FULL OUTER JOIN` keyword returns all records when there is a match in left (table1) or right (table2) table records.**
+
+**Note: `FULL OUTER JOIN` can potentially return very large result-sets!**
+
+**Tip: `FULL OUTER JOIN` and `FULL JOIN` are the same.**
+
+# `FULL OUTER JOIN` Syntax
+
+```sql
+SELECT column_name(s)
+FROM table1
+FULL OUTER JOIN table2
+ON table1.column_name = table2.column_name
+WHERE condition;
+```
+
+![](images/fulljoin.png)
+
+# SQL `FULL OUTER JOIN` Example
+
+The following SQL statement **selects all customers, and all orders:**
+
+```sql
+SELECT Customers.CustomerName, Orders.OrderID
+FROM Customers
+FULL OUTER JOIN Orders ON Customers.CustomerID=Orders.CustomerID
+ORDER BY Customers.CustomerName;
+```
+
+`Note: The ` FULL OUTER JOIN `keyword returns all matching records from both tables whether the other table matches or not. So, if there are rows in` "Customers" `that do not have matches in` "Orders" `, or if there are rows in ` "Orders" `that do not have matches in` "Customers" `, those rows will be listed as well.`
+
+```
+            customername            | orderid
+------------------------------------+---------
+ Alfreds Futterkiste                |
+ Ana Trujillo Emparedados y helados |   10308
+ Antonio Moreno Taquería            |   10365
+ Around the Horn                    |   10355
+ Around the Horn                    |   10383
+ Berglunds snabbköp                 |   10280
+ Berglunds snabbköp                 |   10278
+ Berglunds snabbköp                 |   10384
+ Blauer See Delikatessen            |
+ Blondel père et fils               |   10265
+```
+
+# 20. SQL Self Join
+
+A self join is a regular join, but the table is joined with itself.
+
+`T1 and T2 are different table aliases for the same table.`
+
+## Self Join Syntax
+
+```sql
+SELECT column_name(s)
+FROM table1 T1, table1 T2
+WHERE condition;
+```
+
+# SQL Self Join Example
+
+The following SQL statement **matches customers that are from the same city**:
+
+```sql
+SELECT A.CustomerName AS CustomerName1, B.CustomerName AS CustomerName2, A.City
+FROM Customers A, Customers B
+WHERE A.CustomerID <> B.CustomerID
+AND A.City = B.City
+ORDER BY A.City;
+```
+
+```
+         customername1          |         customername2          |     city
+--------------------------------+--------------------------------+--------------
+ Cactus Comidas para llevar     | Océano Atlántico Ltda.         | Buenos Aires
+ Cactus Comidas para llevar     | Rancho grande                  | Buenos Aires
+ Océano Atlántico Ltda.         | Cactus Comidas para llevar     | Buenos Aires
+ Océano Atlántico Ltda.         | Rancho grande                  | Buenos Aires
+ Rancho grande                  | Cactus Comidas para llevar     | Buenos Aires
+ Rancho grande                  | Océano Atlántico Ltda.         | Buenos Aires
+ Princesa Isabel Vinhoss        | Furia Bacalhau e Frutos do Mar | Lisboa
+ Furia Bacalhau e Frutos do Mar | Princesa Isabel Vinhoss        | Lisboa
+ Consolidated Holdings          | Seven Seas Imports             | London
+ Consolidated Holdings          | B''s Beverages                 | London
+
+```
+
+# 21. SQL `UNION` Operator
+
+The `UNION` operator is used to combine the result-set of two or more `SELECT` statements.
+
+- **Every `SELECT` statement within `UNION` must have the same number of columns**
+- **The columns must also have similar data types**
+- **The columns in every `SELECT` statement must also be in the same order**
+
+# `UNION` Syntax
+
+```sql
+SELECT column_name(s) FROM table1
+UNION
+SELECT column_name(s) FROM table2;
+```
+
+# `UNION` ALL Syntax
+
+**The `UNION` operator selects only distinct values by default. To allow duplicate values, use ` UNION ALL`:**
+
+```sql
+SELECT column_name(s) FROM table1
+UNION ALL
+SELECT column_name(s) FROM table2;
+```
+
+**Note: The column names in the result-set are usually equal to the column names in the first `SELECT` statement.**
+
+# SQL `UNION` Example
+
+The following SQL statement **returns the cities (only distinct values) from both the "Customers" and the "Suppliers" table**:
+
+```sql
+SELECT City FROM Customers
+UNION
+SELECT City FROM Suppliers
+ORDER BY City;
+```
+
+```
+     city
+--------------
+ Aachen
+ Albuquerque
+ Anchorage
+ Ann Arbor
+ Annecy
+ Århus
+ Barcelona
+ Barquisimeto
+ Bend
+ Bergamo
+```
+
+**Note: If some customers or suppliers have the same city, each city will only be listed once, because `UNION` selects only distinct values. Use UNION ALL to also select duplicate values!**
+
+# SQL `UNION ALL` Example
+
+The following SQL statement **returns the cities (duplicate values also) from both the "Customers" and the "Suppliers" table**:
+
+```sql
+SELECT City FROM Customers
+UNION ALL
+SELECT City FROM Suppliers
+ORDER BY City;
+```
+
+```
+     city
+--------------
+ Aachen
+ Albuquerque
+ Anchorage
+ Ann Arbor
+ Annecy
+ Århus
+ Barcelona
+ Barquisimeto
+ Bend
+ Bergamo
+```
+
+# SQL `UNION` With `WHERE`
+
+The following SQL statement **returns the German cities (only distinct values) from both the "Customers" and the "Suppliers" table**:
+
+```sql
+SELECT City, Country FROM Customers
+WHERE Country='Germany'
+UNION
+SELECT City, Country FROM Suppliers
+WHERE Country='Germany'
+ORDER BY City;
+```
+
+```
+      city      | country
+----------------+---------
+ Aachen         | Germany
+ Berlin         | Germany
+ Brandenburg    | Germany
+ Cunewalde      | Germany
+ Cuxhaven       | Germany
+ Frankfurt      | Germany
+ Frankfurt a.M. | Germany
+ Köln           | Germany
+ Leipzig        | Germany
+ Mannheim       | Germany
+```
+
+# SQL `UNION ALL` With `WHERE`
+
+The following SQL statement **returns the German cities (duplicate values also) from both the "Customers" and the "Suppliers" table**:
+
+```sql
+SELECT City, Country FROM Customers
+WHERE Country='Germany'
+UNION ALL
+SELECT City, Country FROM Suppliers
+WHERE Country='Germany'
+ORDER BY City;
+```
+
+```
+      city      | country
+----------------+---------
+ Aachen         | Germany
+ Berlin         | Germany
+ Berlin         | Germany
+ Brandenburg    | Germany
+ Cunewalde      | Germany
+ Cuxhaven       | Germany
+ Frankfurt      | Germany
+ Frankfurt a.M. | Germany
+ Köln           | Germany
+ Leipzig        | Germany
+```
+
+# Another `UNION` Example
+
+The following SQL statement **lists all customers and suppliers**:
+
+```sql
+SELECT 'Customer' AS Type, ContactName, City, Country
+FROM Customers
+UNION
+SELECT 'Supplier', ContactName, City, Country
+FROM Suppliers;
+```
+
+```
+   type   |     contactname     |      city      | country
+----------+---------------------+----------------+---------
+ Supplier | Peter Wilson        | Manchester     | UK
+ Customer | Diego Roel          | Madrid         | Spain
+ Customer | José Pedro Freyre   | Sevilla        | Spain
+ Supplier | Anne Heikkonen      | Lappeenranta   | Finland
+ Customer | Mario Pontes        | Rio de Janeiro | Brazil
+ Customer | Aria Cruz           | São Paulo      | Brazil
+ Customer | Guillermo Fernández | México D.F.    | Mexico
+ Customer | Simon Crowther      | London         | UK
+ Customer | Helvetius Nagy      | Kirkland       | USA
+ Customer | Carine Schmitt      | Nantes         | France
+```
+
+**Notice the `AS Type` above - it is an alias. SQL `Aliases` are used to give a table or a column a temporary name. An alias only exists for the duration of the query. So, here we have created a temporary column named "Type", that list whether the contact person is a "Customer" or a "Supplier".**
+
+# 22. SQL `GROUP BY` Statement
+
+**The `GROUP BY` statement groups rows that have the same values into summary rows, like "find the number of customers in each country".**
+
+**The `GROUP BY` statement is often used with aggregate functions (`COUNT()`, `MAX()`, `MIN()`, `SUM()`, `AVG()`) to group the result-set by one or more columns.**
+
+# `GROUP BY` Syntax
+
+```sql
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+GROUP BY column_name(s)
+ORDER BY column_name(s);
+```
+
+# SQL `GROUP BY` Examples
+
+The following SQL statement **lists the number of customers in each country**:
+
+```sql
+SELECT COUNT(CustomerID), Country
+FROM Customers
+GROUP BY Country;
+```
+
+```
+ count |   country
+-------+-------------
+     3 | Argentina
+     5 | Spain
+     2 | Switzerland
+     3 | Italy
+     4 | Venezuela
+     2 | Belgium
+     1 | Norway
+     2 | Sweden
+    13 | USA
+    11 | France
+```
+
+The following SQL statement **lists the number of customers in each country, sorted high to low**:
+
+```sql
+SELECT COUNT(CustomerID), Country
+FROM Customers
+GROUP BY Country
+ORDER BY COUNT(CustomerID) DESC;
+```
+
+```
+ count |  country
+-------+-----------
+    13 | USA
+    11 | France
+    11 | Germany
+     9 | Brazil
+     7 | UK
+     5 | Spain
+     5 | Mexico
+     4 | Venezuela
+     3 | Argentina
+     3 | Italy
+```
+
+# SQL `GROUP BY` With `JOIN` Example
+
+The following SQL statement **lists the number of orders sent by each shipper**:
+
+```sql
+SELECT Shippers.ShipperName, COUNT(Orders.OrderID) AS NumberOfOrders FROM Orders
+LEFT JOIN Shippers ON Orders.ShipperID = Shippers.ShipperID
+GROUP BY ShipperName;
+```
+
+```
+   shippername    | numberoforders
+------------------+----------------
+ United Package   |             74
+ Speedy Express   |             54
+ Federal Shipping |             68
 ```
