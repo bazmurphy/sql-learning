@@ -1363,7 +1363,7 @@ WHERE condition;
 
 ![](images/fulljoin.png)
 
-## `FULL OUTER JOIN` Example
+## SQL `FULL OUTER JOIN` Example
 
 The following SQL statement **selects all customers, and all orders:**
 
@@ -1685,7 +1685,7 @@ GROUP BY ShipperName;
 
 # 23. SQL `HAVING` Clause
 
-The HAVING clause was added to SQL because the WHERE keyword cannot be used with aggregate functions.
+**The `HAVING` clause was added to SQL because the `WHERE` keyword cannot be used with aggregate functions.**
 
 ## `HAVING` Syntax
 
@@ -1779,4 +1779,349 @@ HAVING COUNT(Orders.OrderID) > 25;
  lastname | numberoforders
 ----------+----------------
  Davolio  |             29
+```
+
+# 24. SQL `EXISTS` Operator
+
+**The `EXISTS` operator is used to test for the existence of any record in a subquery.**
+
+**The `EXISTS` operator returns `TRUE` if the subquery returns one or more records.**
+
+## `EXISTS` Syntax
+
+```sql
+SELECT column_name(s)
+FROM table_name
+WHERE EXISTS
+(SELECT column_name FROM table_name WHERE condition);
+```
+
+## SQL `EXISTS` Examples
+
+The following SQL statement **returns TRUE and lists the suppliers with a product price less than 20**:
+
+```sql
+SELECT SupplierName
+FROM Suppliers
+WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SupplierID = Suppliers.supplierID AND Price < 20);
+```
+
+```
+           suppliername
+-----------------------------------
+ Exotic Liquid
+ New Orleans Cajun Delights
+ Tokyo Traders
+ Mayumi's
+ Pavlova, Ltd.
+ Specialty Biscuits, Ltd.
+ PB Knäckebröd AB
+ Refrescos Americanas LTDA
+ Heli Süßwaren GmbH & Co. KG
+ Plutzer Lebensmittelgroßmärkte AG
+```
+
+The following SQL statement **returns TRUE and lists the suppliers with a product price equal to 22**:
+
+```sql
+SELECT SupplierName
+FROM Suppliers
+WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SupplierID = Suppliers.supplierID AND Price = 22);
+```
+
+```
+        suppliername
+----------------------------
+ New Orleans Cajun Delights
+```
+
+# 25. SQL `EXISTS` Operator
+
+The `EXISTS` operator is used to test for the existence of any record in a subquery.
+
+The `EXISTS` operator returns `TRUE` if the subquery returns one or more records.
+
+## `EXISTS` Syntax
+
+```sql
+SELECT column_name(s)
+FROM table_name
+WHERE EXISTS
+(SELECT column_name FROM table_name WHERE condition);
+```
+
+## SQL `EXISTS` Examples
+
+The following SQL statement **returns TRUE and lists the suppliers with a product price less than 20**:
+
+```sql
+SELECT SupplierName
+FROM Suppliers
+WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SupplierID = Suppliers.supplierID AND Price < 20);
+```
+
+```
+           suppliername
+-----------------------------------
+ Exotic Liquid
+ New Orleans Cajun Delights
+ Tokyo Traders
+ Mayumi's
+ Pavlova, Ltd.
+ Specialty Biscuits, Ltd.
+ PB Knäckebröd AB
+ Refrescos Americanas LTDA
+ Heli Süßwaren GmbH & Co. KG
+ Plutzer Lebensmittelgroßmärkte AG
+```
+
+The following SQL statement **returns TRUE and lists the suppliers with a product price equal to 22**:
+
+```sql
+SELECT SupplierName
+FROM Suppliers
+WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SupplierID = Suppliers.supplierID AND Price = 22);
+```
+
+```
+        suppliername
+----------------------------
+ New Orleans Cajun Delights
+```
+
+# 26. SQL `ANY` and `ALL` Operators
+
+**The `ANY` and `ALL` operators allow you to perform a comparison between a single column value and a range of other values.**
+
+## The SQL `ANY` Operator
+
+**The `ANY` operator:**
+
+**- returns a boolean value as a result**
+**- returns TRUE if ANY of the subquery values meet the condition**
+
+**`ANY` means that the condition will be true if the operation is true for any of the values in the range.**
+
+## `ANY` Syntax
+
+**Note: The operator must be a standard comparison operator** (`=`, `<>`, `!=`, `>`, `>=`, `<`, or `<=`).
+
+```sql
+SELECT column_name(s)
+FROM table_name
+WHERE column_name operator ANY
+  (SELECT column_name
+  FROM table_name
+  WHERE condition);
+```
+
+## The SQL `ALL` Operator
+
+**The `ALL` operator:**
+
+**- returns a boolean value as a result**
+**- returns `TRUE` if `ALL` of the subquery values meet the condition**
+**- is used with `SELECT`, `WHERE` and `HAVING` statements**
+
+**`ALL` means that the condition will be true only if the operation is true for all values in the range. **
+
+## `ALL` Syntax With SELECT
+
+```sql
+SELECT ALL column_name(s)
+FROM table_name
+WHERE condition;
+```
+
+## `ALL` Syntax With `WHERE` or `HAVING`
+
+**Note: The operator must be a standard comparison operator** (`=`, `<>`, `!=`, `>`, `>=`, `<`, or `<=`).
+
+```sql
+SELECT column_name(s)
+FROM table_name
+WHERE column_name operator ALL
+  (SELECT column_name
+  FROM table_name
+  WHERE condition);
+```
+
+## SQL `ANY` Examples
+
+The following SQL statement **lists the ProductName if it finds `ANY` records in the OrderDetails table has Quantity equal to 10 (this will return `TRUE` because the Quantity column has some values of 10)**:
+
+```sql
+SELECT ProductName
+FROM Products
+WHERE ProductID = ANY
+  (SELECT ProductID
+  FROM OrderDetails
+  WHERE Quantity = 10);
+```
+
+```
+           productname
+---------------------------------
+ Chais
+ Chang
+ Chef Anton's Cajun Seasoning
+ Uncle Bob's Organic Dried Pears
+ Konbu
+ Tofu
+ Pavlova
+ Teatime Chocolate Biscuits
+ Sir Rodney's Scones
+ Guaraná Fantástica
+```
+
+The following SQL statement **lists the ProductName if it finds `ANY` records in the OrderDetails table has Quantity larger than 99 (this will return `TRUE` because the Quantity column has some values larger than 99)**:
+
+```sql
+SELECT ProductName
+FROM Products
+WHERE ProductID = ANY
+  (SELECT ProductID
+  FROM OrderDetails
+  WHERE Quantity > 99);
+```
+
+```
+  productname
+----------------
+ Steeleye Stout
+ Pâté chinois
+```
+
+**The following SQL statement lists the ProductName if it finds `ANY` records in the OrderDetails table has Quantity larger than 1000 (this will return `FALSE` because the Quantity column has no values larger than 1000)**:
+
+```sql
+SELECT ProductName
+FROM Products
+WHERE ProductID = ANY
+  (SELECT ProductID
+  FROM OrderDetails
+  WHERE Quantity > 1000);
+```
+
+```
+ productname
+-------------
+(0 rows)
+
+```
+
+## SQL `ALL` Examples
+
+The following SQL statement **lists ALL the product names**:
+
+```sql
+SELECT ALL ProductName
+FROM Products
+WHERE TRUE;
+```
+
+```
+           productname
+---------------------------------
+ Chais
+ Chang
+ Aniseed Syrup
+ Chef Anton's Cajun Seasoning
+ Chef Anton's Gumbo Mix
+ Grandma's Boysenberry Spread
+ Uncle Bob's Organic Dried Pears
+ Northwoods Cranberry Sauce
+ Mishi Kobe Niku
+ Ikura
+```
+
+**The following SQL statement lists the ProductName if `ALL` the records in the OrderDetails table has Quantity equal to 10. This will of course return `FALSE` because the Quantity column has many different values (not only the value of 10)**:
+
+```sql
+SELECT ProductName
+FROM Products
+WHERE ProductID = ALL
+  (SELECT ProductID
+  FROM OrderDetails
+  WHERE Quantity = 10);
+```
+
+```
+ productname
+-------------
+(0 rows)
+```
+
+# 27. SQL `SELECT INTO` Statement
+
+**The `SELECT INTO` statement copies data from one table into a new table.**
+
+## `SELECT INTO` Syntax
+
+**The new table will be created with the column-names and types as defined in the old table. You can create new column names using the AS clause.**
+
+**Copy all columns into a new table:**
+
+```sql
+SELECT *
+INTO newtable [IN externaldb]
+FROM oldtable
+WHERE condition;
+```
+
+**Copy only some columns into a new table:**
+
+```sql
+SELECT column1, column2, column3, ...
+INTO newtable [IN externaldb]
+FROM oldtable
+WHERE condition;
+```
+
+## SQL `SELECT INTO` Examples
+
+The following SQL statement **creates a backup copy of Customers**:
+
+```sql
+SELECT \* INTO CustomersBackup2017
+FROM Customers;
+```
+
+The following SQL statement **uses the IN clause to copy the table into a new table in another database**:
+
+```sql
+SELECT \* INTO CustomersBackup2017 IN 'Backup.mdb'
+FROM Customers;
+```
+
+The following SQL statement **copies only a few columns into a new table**:
+
+```sql
+SELECT CustomerName, ContactName INTO CustomersBackup2017
+FROM Customers;
+```
+
+The following SQL statement **copies only the German customers into a new table**:
+
+```sql
+SELECT \* INTO CustomersGermany
+FROM Customers
+WHERE Country = 'Germany';
+```
+
+The following SQL statement **copies data from more than one table into a new table**:
+
+```sql
+SELECT Customers.CustomerName, Orders.OrderID
+INTO CustomersOrderBackup2017
+FROM Customers
+LEFT JOIN Orders ON Customers.CustomerID = Orders.CustomerID;
+```
+
+**Tip: `SELECT INTO` can also be used to create a new, empty table using the schema of another. Just add a WHERE clause that causes the query to return no data:**
+
+```sql
+SELECT \* INTO newtable
+FROM oldtable
+WHERE 1 = 0;
 ```
