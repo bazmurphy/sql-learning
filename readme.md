@@ -1201,7 +1201,7 @@ ON table1.column_name = table2.column_name;
 
 ![](images/innerjoin.png)
 
-## SQL INNER JOIN Example
+## SQL `INNER JOIN` Example
 
 The following SQL statement **selects all orders with customer information**:
 
@@ -1227,7 +1227,7 @@ INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID;
 
 **Note: The `INNER JOIN`keyword selects all rows from both tables as long as there is a match between the columns. If there are records in the `"Orders" table` that do not have matches in `"Customers"`, these orders will not be shown!**
 
-## JOIN Three Tables
+## `JOIN` Three Tables
 
 The following SQL statement **selects all orders with customer and shipper information**:
 
@@ -1256,7 +1256,7 @@ INNER JOIN Shippers ON Orders.ShipperID = Shippers.ShipperID);
 
 **The `LEFT JOIN` keyword returns all records from the left table (table1), and the matching records from the right table (table2). The result is 0 records from the right side, if there is no match.**
 
-## LEFT JOIN Syntax
+## `LEFT JOIN` Syntax
 
 ```sql
 SELECT column_name(s)
@@ -1269,7 +1269,7 @@ ON table1.column_name = table2.column_name;
 
 ![](images/leftjoin.png)
 
-## SQL LEFT JOIN Example
+## SQL `LEFT JOIN` Example
 
 The following SQL statement will **select all customers, and any orders they might have**:
 
@@ -1363,7 +1363,7 @@ WHERE condition;
 
 ![](images/fulljoin.png)
 
-# SQL `FULL OUTER JOIN` Example
+# `FULL OUTER JOIN` Example
 
 The following SQL statement **selects all customers, and all orders:**
 
